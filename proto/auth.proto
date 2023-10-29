@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package auth;
+
+service UserService {
+  rpc CreateUser (CreateUserDto) returns (User) {}
+  rpc FindAllUsers (PaginationDto) returns (Users) {}
+  rpc FindOneUser (IFindOneUserDto) returns (User) {}
+  rpc UpdateUser (UpdateUserDto) returns (User) {}
+  rpc DeleteUser (IFindOneUserDto) returns (User) {}
+  rpc FindOneUserForAuth (IFindOneUserByIdDto) returns (User) {}
+  rpc Login (ILoginDto) returns (User) {}
+}
+message IFindOneUserByIdDto {
+  string id = 1;
+}
+message ILoginDto {
+  string username = 1;
+  string password = 2;
+}
+message Empty {}
+message PaginationDto {
+  optional int32 page = 1;
+  optional int32 page_size = 2;
+  optional string relations = 3;
+}
+
+message UpdateUserDto {
+  string id = 1;
+  optional string username = 2;
+  optional string password = 3;
+}
+message IFindOneUserDto {
+  string id = 1;
+  optional bool relations = 2;
+}
+
+message Users {
+  repeated User users = 1;
+}
+
+message CreateUserDto {
+  string username = 1;
+  string password = 2;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string password = 3;
+  bool isActive = 4;
+}

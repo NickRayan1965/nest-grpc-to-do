@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package taskcategory;
+service TaskCategoryService {
+
+  rpc FindOneTaskCategory(IFindOneTaskCategoryDto) returns (ITaskCategoryResponse);
+  rpc FindAllTaskCategories(IFindAllTaskCategoriesDto) returns ( ITaskCategoryListResponse);
+  rpc CreateTaskCategory(ICreateTaskCategoryDto) returns (ITaskCategoryResponse);
+  rpc UpdateTaskCategory(IUpdateTaskCategoryDto) returns (ITaskCategoryResponse);
+  rpc DeleteTaskCategory(IFindOneTaskCategoryDto) returns (ITaskCategoryResponse);
+  rpc RestoreTaskCategory(IFindOneTaskCategoryDto) returns (ITaskCategoryResponse);
+}
+
+message ITaskCategory {
+  string id = 1;
+  string name = 2;
+  bool isActive = 4;
+}
+message IFindAllTaskCategoriesDto {
+  optional string userId = 1;
+  optional string name = 2;
+  optional string isActive = 3;
+}
+
+
+// Response One
+message ITaskCategoryResponse {
+  ITaskCategory data = 1;
+  IMetaResponse meta = 2;
+}
+
+message IPaginationResponse {
+  int32 total_count = 2;
+  int32 page_size = 4;
+  int32 page = 3;
+}
+// Meta Response
+message IMetaResponse {
+  string statusCode = 1;
+  string message = 2;
+  repeated string errors = 3;
+}
+
+// Response List
+message ITaskCategoryListResponse {
+  repeated ITaskCategory data = 1;
+  IPaginationResponse pagination = 2;
+  IMetaResponse meta = 3;
+}
+
+// Pagination Response
+
+
+// Find One
+message IFindOneTaskCategoryDto {
+  string id = 1;
+}
+
+// Create
+message ICreateTaskCategoryDto {
+  string name = 1;
+  string userId = 2;
+}
+// Update
+message IUpdateTaskCategoryDto {
+  string id = 1;
+  optional string name = 2;
+}
+// Restore
+message IRestoreTaskCategoryDto {
+  string id = 1;
+}
+
+
+
