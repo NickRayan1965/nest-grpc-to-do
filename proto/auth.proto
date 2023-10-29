@@ -10,7 +10,27 @@ service UserService {
   rpc DeleteUser (IFindOneUserDto) returns (User) {}
   rpc FindOneUserForAuth (IFindOneUserByIdDto) returns (User) {}
   rpc Login (ILoginDto) returns (User) {}
+
+  rpc FindAllRoles (Empty) returns (IRoles) {}
+  rpc FindOneRole (IFindOneRoleByIdDto) returns (IRole) {}
 }
+
+message IRole {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message IFindOneRoleByIdDto {
+  string id = 1;
+}
+
+message IRoles {
+  repeated IRole roles = 1;
+}
+
+
+
 message IFindOneUserByIdDto {
   string id = 1;
 }

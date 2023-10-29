@@ -36,12 +36,28 @@ export interface ICreateUserDto {
   password: string;
 }
 
+//entities
 export interface IUser {
   id: string;
   username: string;
   password: string;
   isActive: boolean;
 }
+export interface IRole {
+  id: string;
+  name: string;
+  description: string;
+}
+//
+
+export interface IFindOneRoleByIdDto {
+  id: string;
+}
+
+export interface IRoles {
+  roles: IRole[];
+}
+
 export interface ILoginDto {
   username: string;
   password: string;
@@ -63,6 +79,9 @@ export interface UsersServiceClient {
   findOneUserForAuth(request: IFindOneUserByIdDto): Observable<IUser>;
 
   login(request: ILoginDto): Observable<IUser>;
+
+  findAllRoles(request: Empty): Observable<IRoles>;
+  findOneRole(request: IFindOneRoleByIdDto): Observable<IRole>;
 }
 
 export interface UsersServiceController {
@@ -89,6 +108,12 @@ export interface UsersServiceController {
     request: IFindOneUserByIdDto,
   ): Promise<IUser> | Observable<IUser> | IUser;
   login(request: ILoginDto): Promise<IUser> | Observable<IUser> | IUser;
+
+  findAllRoles(request: Empty): Promise<IRoles> | Observable<IRoles> | IRoles;
+
+  findOneRole(
+    request: IFindOneRoleByIdDto,
+  ): Promise<IRole> | Observable<IRole> | IRole;
 }
 
 export function UsersServiceControllerMethods() {
@@ -101,6 +126,8 @@ export function UsersServiceControllerMethods() {
       'removeUser',
       'findOneUserForAuth',
       'login',
+      'findAllRoles',
+      'findOneRole',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
