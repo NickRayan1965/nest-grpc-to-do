@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/any.proto";
 package taskcategory;
 service TaskCategoryService {
 
@@ -17,7 +17,7 @@ message ITaskCategory {
   bool isActive = 4;
 }
 message IFindAllTaskCategoriesDto {
-  optional string userId = 1;
+  string userId = 1;
   optional string name = 2;
   optional string isActive = 3;
 }
@@ -30,15 +30,17 @@ message ITaskCategoryResponse {
 }
 
 message IPaginationResponse {
-  int32 total_count = 2;
-  int32 page_size = 4;
-  int32 page = 3;
+  int32 total_count = 1;
+  //int32 page_size = 4;
+  //int32 page = 3;
 }
 // Meta Response
+//
 message IMetaResponse {
   string statusCode = 1;
   string message = 2;
-  repeated string errors = 3;
+  //any errors
+  optional google.protobuf.Any errors = 3;
 }
 
 // Response List
@@ -54,6 +56,7 @@ message ITaskCategoryListResponse {
 // Find One
 message IFindOneTaskCategoryDto {
   string id = 1;
+  string userId = 2;
 }
 
 // Create
@@ -64,11 +67,13 @@ message ICreateTaskCategoryDto {
 // Update
 message IUpdateTaskCategoryDto {
   string id = 1;
-  optional string name = 2;
+  string userId = 2;
+  optional string name = 3;
 }
 // Restore
 message IRestoreTaskCategoryDto {
   string id = 1;
+  string userId = 2;
 }
 
 

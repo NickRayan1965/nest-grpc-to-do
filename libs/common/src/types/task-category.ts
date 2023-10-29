@@ -14,20 +14,20 @@ export interface ITaskCategory {
 }
 
 export interface IFindAllTaskCategoriesDto {
-  userId?: string;
+  userId: string;
   name?: string;
   isActive?: BooleanString;
 }
 export interface IPaginationResponse {
   total_count: number;
-  page_size: number;
-  page: number;
+  // page_size: number;
+  // page: number;
 }
 
 export interface IMetaResponse {
   statusCode: number;
   message: string;
-  errors: string[];
+  errors?: any;
 }
 
 export interface ITaskCategoryResponse {
@@ -43,6 +43,7 @@ export interface ITaskCategoryListResponse {
 
 export interface IFindOneTaskCategoryDto {
   id: string;
+  userId: string;
 }
 
 export interface ICreateTaskCategoryDto {
@@ -52,6 +53,7 @@ export interface ICreateTaskCategoryDto {
 
 export interface IUpdateTaskCategoryDto {
   id: string;
+  userId: string;
   name: string;
 }
 export interface IRestoreTaskCategoryDto {

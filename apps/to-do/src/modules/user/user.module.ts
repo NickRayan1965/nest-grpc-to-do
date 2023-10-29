@@ -30,6 +30,6 @@ import { UserService } from './services/user.service';
     }),
   ],
   providers: [UserService],
-  exports: [ClientsModule],
+  exports: [UserService],
 })
 export class UserModule {}
