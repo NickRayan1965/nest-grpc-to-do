@@ -108,4 +108,16 @@ export class TaskCategoryService {
       status: HttpStatus.OK,
     });
   }
+  async restoreOneById({ id, userId }: IFindOneTaskCategoryDto) {
+    await this.findOneById({ id, userId });
+    const taskCategoryRestored = await this.taskCategoryModel.findOneAndUpdate(
+      { id },
+      { isActive: true },
+      { new: true },
+    );
+    return buildResponse<ITaskCategoryResponse>({
+      data: taskCategoryRestored,
+      status: HttpStatus.OK,
+    });
+  }
 }
