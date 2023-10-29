@@ -18,5 +18,8 @@ export default registerAs(
       page_size: +process.env.PAGE_SIZE,
       min_page: 1,
     },
+    microservices: {
+      AUTH_MICROSERVICE_URL: process.env[`${prefix}AUTH_MICROSERVICE_URL`],
+    },
   }),
 );
