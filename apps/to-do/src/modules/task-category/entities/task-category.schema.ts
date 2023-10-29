@@ -1,8 +1,9 @@
 import { ITaskCategory } from '@app/common';
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
 export type TaskCategoryDocument = HydratedDocument<TaskCategory>;
+@Schema({ versionKey: false })
 export class TaskCategory implements ITaskCategory {
   @Prop({
     _id: true,
@@ -21,6 +22,7 @@ export class TaskCategory implements ITaskCategory {
   @Prop({
     required: true,
     type: String,
+    index: true,
   })
   userId: string;
 
