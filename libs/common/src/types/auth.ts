@@ -16,6 +16,7 @@ export interface IUpdateUserDto {
   id: string;
   username?: string;
   password?: string;
+  roleIds?: string[];
 }
 
 export interface IFindOneUserDto {
@@ -35,6 +36,7 @@ export interface IUsers {
 export interface ICreateUserDto {
   username: string;
   password: string;
+  roleIds?: string[];
 }
 
 //entities
@@ -43,11 +45,13 @@ export interface IUser {
   username: string;
   password: string;
   isActive: boolean;
+  roles: IRole[];
 }
 export interface IRole {
   id: string;
   name: RoleEnum;
   description: string;
+  users: IUser[];
 }
 //
 

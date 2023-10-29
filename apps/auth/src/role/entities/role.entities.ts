@@ -1,6 +1,7 @@
 import { IRole } from '@app/common';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RoleEnum } from './enum/role.enum';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Role implements IRole {
@@ -12,4 +13,7 @@ export class Role implements IRole {
 
   @Column('varchar', { length: 100 })
   description: string;
+
+  @ManyToMany(() => Role, (role) => role.users)
+  users: User[];
 }

@@ -3,16 +3,16 @@ syntax = "proto3";
 package auth;
 
 service UserService {
-  rpc CreateUser (CreateUserDto) returns (User) {}
-  rpc FindAllUsers (PaginationDto) returns (Users) {}
-  rpc FindOneUser (IFindOneUserDto) returns (User) {}
-  rpc UpdateUser (UpdateUserDto) returns (User) {}
-  rpc DeleteUser (IFindOneUserDto) returns (User) {}
-  rpc FindOneUserForAuth (IFindOneUserByIdDto) returns (User) {}
-  rpc Login (ILoginDto) returns (User) {}
+  rpc CreateUser (ICreateUserDto) returns (IUser) {}
+  rpc FindAllUsers (IPaginationDto) returns (IUsers) {}
+  rpc FindOneUser (IFindOneUserDto) returns (IUser) {}
+  rpc UpdateUser (IUpdateUserDto) returns (IUser) {}
+  rpc DeleteUser (IFindOneUserDto) returns (IUser) {}
+  rpc FindOneUserForAuth (IFindOneUserByIdDto) returns (IUser) {}
+  rpc Login (ILoginDto) returns (IUser) {}
 }
 service RoleService {
-  rpc FindAllRoles (Empty) returns (IRoles) {}
+  rpc FindAllRoles (IEmpty) returns (IRoles) {}
   rpc FindOneRole (IFindOneRoleByIdDto) returns (IRole) {}
 }
 
@@ -20,6 +20,7 @@ message IRole {
   string id = 1;
   string name = 2;
   string description = 3;
+  repeated IUser users = 4;
 }
 
 message IFindOneRoleByIdDto {
@@ -39,35 +40,38 @@ message ILoginDto {
   string username = 1;
   string password = 2;
 }
-message Empty {}
-message PaginationDto {
+message IEmpty {}
+message IPaginationDto {
   optional int32 page = 1;
   optional int32 page_size = 2;
   optional string relations = 3;
 }
 
-message UpdateUserDto {
+message IUpdateUserDto {
   string id = 1;
   optional string username = 2;
   optional string password = 3;
+  repeated string roleIds = 4;
 }
 message IFindOneUserDto {
   string id = 1;
   optional bool relations = 2;
 }
 
-message Users {
-  repeated User users = 1;
+message IUsers {
+  repeated IUser users = 1;
 }
 
-message CreateUserDto {
+message ICreateUserDto {
   string username = 1;
   string password = 2;
+  repeated string roleIds = 3;
 }
 
-message User {
+message IUser {
   string id = 1;
   string username = 2;
   string password = 3;
   bool isActive = 4;
+  repeated IRole roles = 5;
 }

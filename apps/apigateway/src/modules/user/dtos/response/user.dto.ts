@@ -1,5 +1,6 @@
 import { IUser } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { RoleDto } from '../../../role/dtos/response/role.dto';
 
 export class UserDto implements IUser {
   @ApiProperty({
@@ -18,4 +19,9 @@ export class UserDto implements IUser {
 
   @ApiProperty()
   isActive: boolean;
+
+  @ApiProperty({
+    type: () => [RoleDto],
+  })
+  roles: RoleDto[];
 }

@@ -14,21 +14,26 @@ import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RcpUnauthorizedException } from '../../common/errors/rcp-exception.exception';
+import { RoleService } from '../../role/services/role.service';
 
 @Injectable()
 export class UsersService {
   private readonly entityName = User.name;
-  private readonly relations: FindOptionsRelations<User> = {};
+  private readonly relations: FindOptionsRelations<User> = {
+    roles: true,
+  };
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject(config.KEY)
     private readonly configService: ConfigType<typeof config>,
+    private readonly roleService: RoleService,
   ) {}
   async create(createUserDto: ICreateUserDto) {
-    createUserDto.password = Encrypter.encrypt(createUserDto.password);
+    const dtoValidated = await this.validateUserDto(createUserDto);
+    dtoValidated.password = Encrypter.encrypt(dtoValidated.password);
     try {
-      const user = await this.userRepository.save(createUserDto);
+      const user = await this.userRepository.save(dtoValidated);
       return user;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -61,6 +66,10 @@ export class UsersService {
 
   async update({ id, ...restOfDto }: IUpdateUserDto) {
     const user = await this.findOne({ id, relations: true });
+    const dtoValidated = await this.validateUserDto(restOfDto);
+    dtoValidated.password = dtoValidated.password
+      ? Encrypter.encrypt(dtoValidated.password)
+      : undefined;
     try {
       const updatedUser = await this.userRepository.save(
         this.userRepository.merge(user, restOfDto),
@@ -92,6 +101,17 @@ export class UsersService {
     });
     this.validateUser(user);
     return user;
+  }
+
+  private async validateUserDto(userDto: Partial<ICreateUserDto>) {
+    const { roleIds, ...restOfDto } = userDto;
+    const rolesPromises = Promise.all(
+      roleIds.map((roleId) => this.roleService.findOneById(roleId)),
+    );
+    const [roles] = await Promise.all([
+      roleIds.length ? rolesPromises : undefined,
+    ]);
+    return this.userRepository.create({ ...restOfDto, roles });
   }
   private validateUser(user: User) {
     if (!user) throw new RcpUnauthorizedException('User not found');
