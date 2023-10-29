@@ -3,6 +3,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import EnvConfiguration from './config/config';
 import { DataBaseModule } from './database/database.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DataBaseModule } from './database/database.module';
     }),
     DataBaseModule,
     UsersModule,
+    RoleModule,
   ],
   providers: [],
 })

@@ -6,7 +6,7 @@ import { IRoles } from '@app/common';
 
 @Injectable()
 export class RoleService {
-  private readonly entityName = Role.name;
+  //private readonly entityName = Role.name;
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,

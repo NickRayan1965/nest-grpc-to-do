@@ -90,9 +90,12 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { id },
     });
+    this.validateUser(user);
+    return user;
+  }
+  private validateUser(user: User) {
     if (!user) throw new RcpUnauthorizedException('User not found');
     if (!user.isActive)
       throw new RcpUnauthorizedException('User is not active');
-    return user;
   }
 }

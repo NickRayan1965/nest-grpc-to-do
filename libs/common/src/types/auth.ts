@@ -2,6 +2,7 @@
 import { GrpcMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import BooleanString from '../interfaces/boolean-string.interface';
+import { RoleEnum } from 'apps/auth/src/role/entities/enum/role.enum';
 
 export const protobufPackage = 'auth';
 
@@ -45,7 +46,7 @@ export interface IUser {
 }
 export interface IRole {
   id: string;
-  name: string;
+  name: RoleEnum;
   description: string;
 }
 //
@@ -79,7 +80,8 @@ export interface UsersServiceClient {
   findOneUserForAuth(request: IFindOneUserByIdDto): Observable<IUser>;
 
   login(request: ILoginDto): Observable<IUser>;
-
+}
+export interface RolesServiceClient {
   findAllRoles(request: Empty): Observable<IRoles>;
   findOneRole(request: IFindOneRoleByIdDto): Observable<IRole>;
 }
@@ -108,14 +110,14 @@ export interface UsersServiceController {
     request: IFindOneUserByIdDto,
   ): Promise<IUser> | Observable<IUser> | IUser;
   login(request: ILoginDto): Promise<IUser> | Observable<IUser> | IUser;
-
+}
+export interface RolesServiceController {
   findAllRoles(request: Empty): Promise<IRoles> | Observable<IRoles> | IRoles;
 
   findOneRole(
     request: IFindOneRoleByIdDto,
   ): Promise<IRole> | Observable<IRole> | IRole;
 }
-
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
@@ -126,8 +128,6 @@ export function UsersServiceControllerMethods() {
       'removeUser',
       'findOneUserForAuth',
       'login',
-      'findAllRoles',
-      'findOneRole',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
@@ -142,5 +142,21 @@ export function UsersServiceControllerMethods() {
     }
   };
 }
-
+export function RolesServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ['findAllRoles', 'findOneRole'];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('RoleService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
+    }
+  };
+}
 export const USERS_SERVICE_NAME = 'UserService';
+export const ROLES_SERVICE_NAME = 'RoleService';
