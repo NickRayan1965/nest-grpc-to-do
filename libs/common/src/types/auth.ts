@@ -28,7 +28,7 @@ export interface IFindOneUserByIdDto {
 
 export interface Empty {}
 
-export interface Users {
+export interface IUsers {
   users: IUser[];
 }
 
@@ -69,7 +69,7 @@ export const AUTH_PACKAGE_NAME = 'auth';
 export interface UsersServiceClient {
   createUser(request: ICreateUserDto): Observable<IUser>;
 
-  findAllUsers(request: IPaginationDto): Observable<Users>;
+  findAllUsers(request: IPaginationDto): Observable<IUsers>;
 
   findOneUser(request: IFindOneUserDto): Observable<IUser>;
 
@@ -93,7 +93,7 @@ export interface UsersServiceController {
 
   findAllUsers(
     request: IPaginationDto,
-  ): Promise<Users> | Observable<Users> | Users;
+  ): Promise<IUsers> | Observable<IUsers> | IUsers;
 
   findOneUser(
     request: IFindOneUserDto,

@@ -5,6 +5,7 @@ import { AUTH_PACKAGE_NAME } from '@app/common';
 import { join } from 'path';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
+import { AuthModule } from '../../auth/auth.module';
 @Module({
   imports: [
     ClientsModule.register([
@@ -17,6 +18,7 @@ import { UserService } from './services/user.service';
         },
       },
     ]),
+    AuthModule,
   ],
   controllers: [UserController],
   providers: [UserService],
