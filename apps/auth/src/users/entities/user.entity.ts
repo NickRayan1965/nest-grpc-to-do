@@ -1,6 +1,12 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IUser } from '@app/common';
-import { Role } from '../../role/entities/role.entities';
+import { Role } from '../../role/entities/role.entity';
 @Entity()
 export class User implements IUser {
   @PrimaryGeneratedColumn('uuid')
@@ -18,5 +24,6 @@ export class User implements IUser {
   @ManyToMany(() => Role, (role) => role.users, {
     cascade: true,
   })
+  @JoinTable()
   roles: Role[];
 }

@@ -10,6 +10,7 @@ export const handleExceptions = (error: any, nameEntity: string): never => {
       `The ${nameEntity} already exists in the database. Details: ${error.detail}`,
     );
   }
+  console.log(error);
   throw new RpcInternalServerErrorException(
     'Error while trying to save the entity',
   );
