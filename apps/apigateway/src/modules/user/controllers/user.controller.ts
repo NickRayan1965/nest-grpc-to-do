@@ -10,7 +10,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dtos/create/create-user.dto';
+import {
+  CreateUserAsAdminDto,
+  CreateUserDto,
+} from '../dtos/create/create-user.dto';
 import { GetUsersQueryDto } from '../dtos/query/get-users-query.dto';
 import { UpdateUserDto } from '../dtos/update/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -25,6 +28,7 @@ import {
 import { UsersDto } from '../dtos/response/users.dto';
 import { UserDto } from '../dtos/response/user.dto';
 import { GetUser } from 'apps/apigateway/src/auth/decorators/get-user.decorator';
+import { RoleEnum } from 'apps/auth/src/role/entities/enum/role.enum';
 @Controller('user')
 @ApiTags('User')
 @ApiBadRequestResponseImplementation()
@@ -38,10 +42,18 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @ApiConflictResponseImplementation()
+  @ApiUnauthorizedResponseImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(RoleEnum.SUPER_ADMIN)
+  createAsAdmin(@Body() createUserAsAdminDto: CreateUserAsAdminDto) {
+    return this.userService.createAsAdmin(createUserAsAdminDto);
+  }
+
   @ApiOkResponseImplementation({ type: UsersDto, method: 'get' })
   @ApiUnauthorizedResponseImplementation()
   @ApiForbiddenResponseImplementation()
-  @Auth()
+  @Auth(RoleEnum.SUPER_ADMIN)
   @Get()
   findAll(@Query() queryParams: GetUsersQueryDto) {
     return this.userService.findAll(queryParams);
@@ -58,7 +70,7 @@ export class UserController {
   @ApiOkResponseImplementation({ type: UserDto, method: 'get' })
   @ApiUnauthorizedResponseImplementation()
   @ApiForbiddenResponseImplementation()
-  @Auth()
+  @Auth(RoleEnum.SUPER_ADMIN)
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.findOne(id);
@@ -74,7 +86,7 @@ export class UserController {
   @ApiOkResponseImplementation({ type: UserDto, method: 'delete' })
   @ApiUnauthorizedResponseImplementation()
   @ApiForbiddenResponseImplementation()
-  @Auth()
+  @Auth(RoleEnum.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.remove(id);

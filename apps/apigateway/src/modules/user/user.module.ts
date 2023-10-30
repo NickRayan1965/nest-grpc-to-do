@@ -6,6 +6,7 @@ import { join } from 'path';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
 import { AuthModule } from '../../auth/auth.module';
+import { RoleModule } from '../role/role.module';
 @Module({
   imports: [
     ClientsModule.register([
@@ -19,6 +20,7 @@ import { AuthModule } from '../../auth/auth.module';
       },
     ]),
     AuthModule,
+    RoleModule,
   ],
   controllers: [UserController],
   providers: [UserService],

@@ -2,6 +2,7 @@ import { ROLES_SERVICE_NAME, RolesServiceClient } from '@app/common';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { AUTH_SERVICE } from '../../user/constants';
 import { ClientGrpc } from '@nestjs/microservices';
+import { RoleEnum } from 'apps/auth/src/role/entities/enum/role.enum';
 
 @Injectable()
 export class RoleService implements OnModuleInit {
@@ -11,10 +12,13 @@ export class RoleService implements OnModuleInit {
     this.roleService =
       this.client.getService<RolesServiceClient>(ROLES_SERVICE_NAME);
   }
-  async findAll() {
+  findAll() {
     this.roleService.findAllRoles({});
   }
   findOne(id: string) {
     return this.roleService.findOneRole({ id });
+  }
+  findOneByName(name: RoleEnum) {
+    return this.roleService.findOneRoleByName({ name });
   }
 }

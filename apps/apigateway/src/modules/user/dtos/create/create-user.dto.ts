@@ -1,6 +1,6 @@
 import { ICreateUserDto } from '@app/common';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Length } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class CreateUserDto implements ICreateUserDto {
   @ApiProperty({
@@ -20,4 +20,15 @@ export class CreateUserDto implements ICreateUserDto {
   @IsString()
   @Length(4, 20)
   password: string;
+}
+export class CreateUserAsAdminDto extends CreateUserDto {
+  @ApiPropertyOptional({
+    title: 'Roles',
+    description: 'Roles of user',
+    example: ['admin'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  roles: string[];
 }
