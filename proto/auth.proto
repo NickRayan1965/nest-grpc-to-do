@@ -14,6 +14,7 @@ service UserService {
 service RoleService {
   rpc FindAllRoles (IEmpty) returns (IRoles) {}
   rpc FindOneRole (IFindOneRoleByIdDto) returns (IRole) {}
+  rpc FindOneRoleByName (IFindOneRoleByNameDto) returns (IRole) {}
 }
 
 message IRole {
@@ -26,7 +27,9 @@ message IRole {
 message IFindOneRoleByIdDto {
   string id = 1;
 }
-
+message IFindOneRoleByNameDto {
+  string name = 1;
+}
 message IRoles {
   repeated IRole roles = 1;
 }

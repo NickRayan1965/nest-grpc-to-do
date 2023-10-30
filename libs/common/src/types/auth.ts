@@ -67,7 +67,9 @@ export interface ILoginDto {
   username: string;
   password: string;
 }
-
+export interface IFindOneRoleByNameDto {
+  name: RoleEnum;
+}
 export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface UsersServiceClient {
@@ -88,6 +90,7 @@ export interface UsersServiceClient {
 export interface RolesServiceClient {
   findAllRoles(request: Empty): Observable<IRoles>;
   findOneRole(request: IFindOneRoleByIdDto): Observable<IRole>;
+  findOneRoleByName(request: IFindOneRoleByNameDto): Observable<IRole>;
 }
 
 export interface UsersServiceController {
@@ -121,6 +124,9 @@ export interface RolesServiceController {
   findOneRole(
     request: IFindOneRoleByIdDto,
   ): Promise<IRole> | Observable<IRole> | IRole;
+  findOneRoleByName(
+    request: IFindOneRoleByNameDto,
+  ): Promise<IRole> | Observable<IRole> | IRole;
 }
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
@@ -148,7 +154,11 @@ export function UsersServiceControllerMethods() {
 }
 export function RolesServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['findAllRoles', 'findOneRole'];
+    const grpcMethods: string[] = [
+      'findAllRoles',
+      'findOneRole',
+      'findOneRoleByName',
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

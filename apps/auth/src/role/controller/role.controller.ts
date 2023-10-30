@@ -1,5 +1,6 @@
 import {
   IFindOneRoleByIdDto,
+  IFindOneRoleByNameDto,
   IRole,
   IRoles,
   RolesServiceController,
@@ -13,6 +14,11 @@ import { RoleService } from '../services/role.service';
 @RolesServiceControllerMethods()
 export class RoleController implements RolesServiceController {
   constructor(private readonly roleService: RoleService) {}
+  findOneRoleByName({
+    name,
+  }: IFindOneRoleByNameDto): IRole | Observable<IRole> | Promise<IRole> {
+    return this.roleService.findOneByName(name);
+  }
   findAllRoles(): IRoles | Promise<IRoles> | Observable<IRoles> {
     return this.roleService.findAll();
   }
