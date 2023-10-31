@@ -1,8 +1,7 @@
 syntax = "proto3";
 import "google/protobuf/any.proto";
-package taskcategory;
+package todo;
 service TaskCategoryService {
-
   rpc FindOneTaskCategory(IFindOneTaskCategoryDto) returns (ITaskCategoryResponse);
   rpc FindAllTaskCategories(IFindAllTaskCategoriesDto) returns ( ITaskCategoryListResponse);
   rpc CreateTaskCategory(ICreateTaskCategoryDto) returns (ITaskCategoryResponse);
