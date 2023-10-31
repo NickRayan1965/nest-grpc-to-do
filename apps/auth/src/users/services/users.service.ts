@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   ICreateUserDto,
   IFindOneUserDto,
@@ -13,7 +13,10 @@ import { Encrypter } from '@app/common/utilities';
 import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RcpUnauthorizedException } from '../../common/errors/rcp-exception.exception';
+import {
+  RcpUnauthorizedException,
+  RpcNotFoundException,
+} from '../../common/errors/rcp-exception.exception';
 import { RoleService } from '../../role/services/role.service';
 
 @Injectable()
@@ -60,7 +63,8 @@ export class UsersService {
       where: { id },
       relations: relations ? this.relations : undefined,
     });
-    if (!user) throw new NotFoundException('User with id ' + id + ' not found');
+    if (!user)
+      throw new RpcNotFoundException('User with id ' + id + ' not found');
     return user;
   }
 
@@ -72,7 +76,7 @@ export class UsersService {
       : undefined;
     try {
       const updatedUser = await this.userRepository.save(
-        this.userRepository.merge(user, restOfDto),
+        this.userRepository.merge(user, dtoValidated),
       );
       return updatedUser;
     } catch (error) {
@@ -87,6 +91,7 @@ export class UsersService {
   async login(loginDto: ILoginDto) {
     const user = await this.userRepository.findOne({
       where: { username: loginDto.username },
+      relations: this.relations,
     });
     if (
       !user ||
@@ -98,13 +103,14 @@ export class UsersService {
   async findOneUserForAuth(id: string) {
     const user = await this.userRepository.findOne({
       where: { id },
+      relations: this.relations,
     });
     this.validateUser(user);
     return user;
   }
 
-  private async validateUserDto(userDto: Partial<ICreateUserDto>) {
-    const { roleIds, ...restOfDto } = userDto;
+  private async validateUserDto(userDto: Partial<ICreateUserDto> = {}) {
+    const { roleIds = [], ...restOfDto } = userDto;
     const rolesPromises = Promise.all(
       roleIds.map((roleId) => this.roleService.findOneById(roleId)),
     );

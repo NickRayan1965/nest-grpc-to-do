@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Role } from '../entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IRoles } from '@app/common';
 import { RpcNotFoundException } from '../../common/errors/rcp-exception.exception';
 import { RoleEnum } from '../entities/enum/role.enum';
 
@@ -13,9 +12,8 @@ export class RoleService {
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
   ) {}
-  async findAll(): Promise<IRoles> {
-    const roles = await this.roleRepository.find();
-    return { roles };
+  async findAll() {
+    return { roles: await this.roleRepository.find() };
   }
   async findOneById(id: string) {
     const role = await this.roleRepository.findOne({ where: { id } });
