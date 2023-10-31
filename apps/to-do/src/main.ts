@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ToDoModule } from './to-do.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { TASK_CATEGORY_PACKAGE_NAME } from '@app/common';
+import { TODO_PACKAGE_NAME } from '@app/common';
 
 async function bootstrap() {
   const port = process.env.PORT || 8694;
@@ -11,11 +11,9 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../task-category.proto'),
-        package: TASK_CATEGORY_PACKAGE_NAME,
-        //puerto 4500
-        //url: '0.0.0.0:4500',
-        url: `0.0.0.0:${process.env.PORT}`,
+        protoPath: join(__dirname, '../to-do.proto'),
+        package: TODO_PACKAGE_NAME,
+        url: `0.0.0.0:${port}`,
         loader: {
           keepCase: true,
         },
