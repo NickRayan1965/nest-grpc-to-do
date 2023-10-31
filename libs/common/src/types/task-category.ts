@@ -58,6 +58,7 @@ export interface IUpdateTaskCategoryDto {
 }
 export interface IRestoreTaskCategoryDto {
   id: string;
+  userId: string;
 }
 
 export const TASK_CATEGORY_PACKAGE_NAME = 'taskcategory';
@@ -65,7 +66,7 @@ export const TASK_CATEGORY_PACKAGE_NAME = 'taskcategory';
 export interface TaskCategoryServiceClient {
   findOneTaskCategory(
     request: IFindOneTaskCategoryDto,
-  ): Observable<ITaskCategory>;
+  ): Observable<ITaskCategoryResponse>;
   findAllTaskCategories(
     request: IFindAllTaskCategoriesDto,
   ): Observable<ITaskCategoryListResponse>;
@@ -86,7 +87,10 @@ export interface TaskCategoryServiceClient {
 export interface TaskCategoryServiceController {
   findOneTaskCategory(
     request: IFindOneTaskCategoryDto,
-  ): Promise<ITaskCategory> | Observable<ITaskCategory> | ITaskCategory;
+  ):
+    | Promise<ITaskCategoryResponse>
+    | Observable<ITaskCategoryResponse>
+    | ITaskCategoryResponse;
 
   findAllTaskCategories(
     request: IFindAllTaskCategoriesDto,

@@ -5,6 +5,8 @@ import {
   TaskCategorySchema,
 } from './entities/task-category.schema';
 import { UserModule } from '../user/user.module';
+import { TaskCategoryService } from './services/task-category.service';
+import { TaskCategoryController } from './controller/task-category.controller';
 
 @Module({
   imports: [
@@ -13,5 +15,8 @@ import { UserModule } from '../user/user.module';
     ]),
     UserModule,
   ],
+  providers: [TaskCategoryService],
+  exports: [TaskCategoryService],
+  controllers: [TaskCategoryController],
 })
 export class TaskCategoryModule {}

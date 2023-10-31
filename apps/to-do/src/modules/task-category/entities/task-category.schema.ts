@@ -34,3 +34,4 @@ export class TaskCategory implements ITaskCategory {
   isActive: boolean;
 }
 export const TaskCategorySchema = SchemaFactory.createForClass(TaskCategory);
+TaskCategorySchema.index({ name: 1, userId: 1 }, { unique: true });
