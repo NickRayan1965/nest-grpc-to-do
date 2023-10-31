@@ -61,7 +61,7 @@ export interface IRestoreTaskCategoryDto {
   userId: string;
 }
 
-export const TASK_CATEGORY_PACKAGE_NAME = 'taskcategory';
+export const TODO_PACKAGE_NAME = 'todo';
 
 export interface TaskCategoryServiceClient {
   findOneTaskCategory(

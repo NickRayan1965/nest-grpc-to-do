@@ -1,2 +1,2 @@
 export * from './auth';
-export * from './task-category';
+export * from './to-do';
