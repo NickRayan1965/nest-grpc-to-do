@@ -25,7 +25,7 @@ export class CreateUserAsAdminDto extends CreateUserDto {
   @ApiPropertyOptional({
     title: 'Roles',
     description: 'Roles of user',
-    example: ['admin'],
+    format: 'uuid',
   })
   @IsOptional()
   @IsArray()

@@ -30,11 +30,10 @@ export class UserRoleGuard implements CanActivate {
       META_ROLES,
       context.getHandler(),
     );
-    const adminPermits = [RoleEnum.SUPER_ADMIN];
-    validRoles.push(...adminPermits);
     if (!validRoles || !validRoles.length) return true;
     const user = context.switchToHttp().getRequest().user as IUser;
-    validateRoles(validRoles, user);
+    const adminRoles = [RoleEnum.SUPER_ADMIN];
+    validateRoles([...validRoles, ...adminRoles], user);
     return true;
   }
 }

@@ -26,8 +26,8 @@ import { AuthController } from './controllers/auth.controller';
     }),
     forwardRef(() => UserModule),
   ],
-  controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [PassportModule, JwtStrategy, AuthService],
+  exports: [AuthService, JwtStrategy, PassportModule],
+  controllers: [AuthController],
 })
 export class AuthModule {}

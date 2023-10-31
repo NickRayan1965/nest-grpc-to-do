@@ -77,6 +77,7 @@ export class UserController {
 
   @ApiOkResponseImplementation({ type: UserDto, method: 'get' })
   @ApiUnauthorizedResponseImplementation()
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get my profile',
   })
@@ -103,6 +104,7 @@ export class UserController {
   }
 
   @ApiOkResponseImplementation({ type: UserDto, method: 'update' })
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Update my profile',
   })

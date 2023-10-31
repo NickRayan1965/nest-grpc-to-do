@@ -13,7 +13,7 @@ export class RoleService implements OnModuleInit {
       this.client.getService<RolesServiceClient>(ROLES_SERVICE_NAME);
   }
   findAll() {
-    this.roleService.findAllRoles({});
+    return this.roleService.findAllRoles({});
   }
   findOne(id: string) {
     return this.roleService.findOneRole({ id });
