@@ -5,6 +5,7 @@ import { TODO_PACKAGE_NAME } from '@app/common';
 import { join } from 'path';
 import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
+import { AuthModule } from '../../auth/auth.module';
 @Module({
   imports: [
     ClientsModule.registerAsync({
@@ -26,6 +27,7 @@ import { ConfigType } from '@nestjs/config';
         },
       ],
     }),
+    AuthModule,
   ],
 })
 export class ToDoModule {}

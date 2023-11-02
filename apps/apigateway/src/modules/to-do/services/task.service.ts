@@ -23,6 +23,9 @@ export class TaskService implements OnModuleInit {
   delete(userId: string, taskId: string) {
     return this.taskService.deleteTask({ id: taskId, userId });
   }
+  findOneById(userId: string, taskId: string) {
+    return this.taskService.findOneTask({ id: taskId, userId });
+  }
   findAll(userId: string, findTasksQueryDto: FindTasksQueryDto) {
     return this.taskService.findAllTasks({
       userId,
