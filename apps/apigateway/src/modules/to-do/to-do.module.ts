@@ -6,6 +6,8 @@ import { join } from 'path';
 import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
 import { AuthModule } from '../../auth/auth.module';
+import { TaskController } from './controllers/task.controller';
+import { TaskService } from './services/task.service';
 @Module({
   imports: [
     ClientsModule.registerAsync({
@@ -29,5 +31,7 @@ import { AuthModule } from '../../auth/auth.module';
     }),
     AuthModule,
   ],
+  controllers: [TaskController],
+  providers: [TaskService],
 })
 export class ToDoModule {}

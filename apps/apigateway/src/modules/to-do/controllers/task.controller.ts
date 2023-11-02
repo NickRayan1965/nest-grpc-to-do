@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TaskService } from '../services/task.service';
 import { CreateTaskDto } from '../dtos/create/create-task.dto';
 import { GetUser } from 'apps/apigateway/src/auth/decorators/get-user.decorator';
@@ -29,6 +29,7 @@ import {
 } from '../dtos/response/task-response.dto';
 
 @Controller('task')
+@ApiTags('Task')
 @ApiBearerAuth()
 @ApiBadRequestResponseImplementation()
 @ApiUnauthorizedResponseImplementation()
@@ -36,6 +37,7 @@ import {
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @ApiOperation({ summary: 'Create new task' })
   @ApiCreatedResponseImplementation(TaskResponseDto)
   @Auth()
   @Post()
@@ -43,6 +45,7 @@ export class TaskController {
     return this.taskService.create(userId, createTaskDto);
   }
 
+  @ApiOperation({ summary: 'Find all tasks (by the user request)' })
   @ApiOkResponseImplementation({
     type: TaskListResponseDto,
     method: 'get',
@@ -56,6 +59,7 @@ export class TaskController {
     return this.taskService.findAll(userId, queryParams);
   }
 
+  @ApiOperation({ summary: 'Find task by id' })
   @ApiOkResponseImplementation({
     type: TaskResponseDto,
     method: 'get',
@@ -69,6 +73,7 @@ export class TaskController {
     return this.taskService.findOneById(userId, taskId);
   }
 
+  @ApiOperation({ summary: 'Update task by id' })
   @ApiOkResponseImplementation({
     type: TaskResponseDto,
     method: 'update',
@@ -83,6 +88,7 @@ export class TaskController {
     return this.taskService.update(userId, taskId, updateTaskDto);
   }
 
+  @ApiOperation({ summary: 'Delete task by id' })
   @ApiOkResponseImplementation({
     type: TaskResponseDto,
     method: 'delete',
