@@ -7,13 +7,9 @@ import { ITask } from '@app/common';
 
 export type TaskDocument = HydratedDocument<Task>;
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: { createdAt: true } })
 export class Task implements ITask {
-  @Prop({
-    _id: true,
-    type: Types.ObjectId,
-  })
-  id: string | Types.ObjectId;
+  _id: string | Types.ObjectId;
 
   @Prop({
     required: true,
@@ -39,17 +35,11 @@ export class Task implements ITask {
   //vencimiento
   @Prop({
     required: true,
-    type: String,
+    type: Date,
   })
   expiration: string;
 
-  @Prop({
-    required: true,
-    type: Date,
-    default: Date.now,
-    transform: (v: string) => new Date(v),
-    parse: (v: Date) => v.toISOString(),
-  })
+  @Prop()
   createdAt: string;
 
   @Prop({

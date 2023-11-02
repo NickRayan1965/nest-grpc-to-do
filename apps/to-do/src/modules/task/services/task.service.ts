@@ -45,11 +45,11 @@ export class TaskService {
       handleExceptions(error, entityName);
     }
   }
-  async findOneById({ id, userId }: IFindOneTaskDto) {
-    const task = await this.taskModel.findOne({ id, userId });
+  async findOneById({ _id, userId }: IFindOneTaskDto) {
+    const task = await this.taskModel.findOne({ _id, userId });
     if (!task)
       throw new RpcNotFoundException(
-        'Task with id' + id + 'not found for user with id' + userId,
+        'Task with id ' + _id + 'not found for user with id ' + userId,
       );
     return buildResponse<ITaskResponse>({
       data: task,
@@ -129,8 +129,8 @@ export class TaskService {
       },
     });
   }
-  async update({ id, userId, ...rest }: IUpdateTaskDto) {
-    const { data } = await this.findOneById({ id, userId });
+  async update({ _id, userId, ...rest }: IUpdateTaskDto) {
+    const { data } = await this.findOneById({ _id, userId });
     const dtoValidated = await this.getAndValidateTaskDto({
       userId,
       ...rest,
@@ -149,7 +149,7 @@ export class TaskService {
 
   async delete(findOneTaskDto: IFindOneTaskDto) {
     const { data } = await this.findOneById(findOneTaskDto);
-    await this.taskModel.deleteOne({ id: data.id });
+    await this.taskModel.deleteOne({ _id: data._id });
     return buildResponse<ITaskResponse>({
       data,
       status: HttpStatus.OK,

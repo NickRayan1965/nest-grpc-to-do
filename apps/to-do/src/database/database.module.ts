@@ -11,9 +11,9 @@ import { DatabaseSevice } from './services/database.service';
       useFactory: (configService: ConfigType<typeof config>) => {
         const { database } = configService;
         const uri = `${database.prefix_connection}://${database.host}:${database.port}`;
-        console.log({ uri });
         return {
           dbName: database.database,
+          autoCreate: true,
           auth: {
             username: database.username,
             password: database.password,
