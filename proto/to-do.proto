@@ -18,7 +18,7 @@ service TaskService {
 }
 //<<Task>>
 message ITask{
-  string id = 1;
+  string _id = 1;
   string userId = 2;
   string name = 3;
   string description = 4;
@@ -38,7 +38,7 @@ message ICreateTaskDto {
 }
 
 message IUpdateTaskDto {
-  string id = 1;
+  string _id = 1;
   optional string name = 2;
   optional string description = 3;
   optional string expiration = 4;
@@ -47,7 +47,7 @@ message IUpdateTaskDto {
   string userId = 7;
 }
 message IFindOneTaskDto {
-  string id = 1;
+  string _id = 1;
   string userId = 2;
 }
 message IFindAllTasksDto {
