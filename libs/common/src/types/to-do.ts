@@ -3,8 +3,64 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import BooleanString from '../interfaces/boolean-string.interface';
 import { Types } from 'mongoose';
+import { TaskPriorityEnum } from 'apps/to-do/src/modules/task/entities/enum/task-priority.enum';
+import { TaskStatusEnum } from 'apps/to-do/src/modules/task/entities/enum/task-status.enum';
 
 export const protobufPackageTaskCategory = 'taskcategory';
+
+//<<Task>>
+export interface ITask {
+  id: string | Types.ObjectId;
+  userId: string;
+  name: string;
+  description: string;
+  expiration: string;
+  createdAt: string;
+  priority: TaskPriorityEnum;
+  status: TaskStatusEnum;
+  categories: ITaskCategory[];
+}
+export interface ICreateTaskDto {
+  userId: string;
+  name: string;
+  description?: string;
+  expiration: string;
+  priority: TaskPriorityEnum;
+  categoryIds: string[];
+}
+export interface IUpdateTaskDto {
+  id: string;
+  userId: string;
+  name?: string;
+  description?: string;
+  expiration?: string;
+  priority?: TaskPriorityEnum;
+  categoryIds?: string[];
+}
+export interface IFindOneTaskDto {
+  id: string;
+  userId: string;
+}
+export interface IFindAllTasksDto {
+  userId: string;
+  filterByContent?: string;
+  expiration?: string;
+  priority?: TaskPriorityEnum;
+  status?: TaskStatusEnum;
+  page?: number;
+  pageSize?: number;
+  categoryIds?: string[];
+}
+export interface ITaskResponse {
+  data: ITask;
+  meta: IMetaResponse;
+}
+export interface ITaskListResponse {
+  data: ITask[];
+  pagination: IPaginationResponse;
+  meta: IMetaResponse;
+}
+//<<Task>>
 
 export interface ITaskCategory {
   id: string | Types.ObjectId;
@@ -83,7 +139,31 @@ export interface TaskCategoryServiceClient {
     request: IRestoreTaskCategoryDto,
   ): Observable<ITaskCategoryResponse>;
 }
+export interface ITaskServiceClient {
+  findOneTask(request: IFindOneTaskDto): Observable<ITaskResponse>;
+  findAllTasks(request: IFindAllTasksDto): Observable<ITaskListResponse>;
+  createTask(request: ICreateTaskDto): Observable<ITaskResponse>;
+  updateTask(request: IUpdateTaskDto): Observable<ITaskResponse>;
+  deleteTask(request: IFindOneTaskDto): Observable<ITaskResponse>;
+}
 
+export interface ITaskServiceController {
+  findOneTask(
+    request: IFindOneTaskDto,
+  ): Promise<ITaskResponse> | Observable<ITaskResponse> | ITaskResponse;
+  findAllTasks(
+    request: IFindAllTasksDto,
+  ): Promise<ITaskListResponse> | Observable<ITaskListResponse>;
+  createTask(
+    request: ICreateTaskDto,
+  ): Promise<ITaskResponse> | Observable<ITaskResponse>;
+  updateTask(
+    request: IUpdateTaskDto,
+  ): Promise<ITaskResponse> | Observable<ITaskResponse>;
+  deleteTask(
+    request: IFindOneTaskDto,
+  ): Promise<ITaskResponse> | Observable<ITaskResponse>;
+}
 export interface TaskCategoryServiceController {
   findOneTaskCategory(
     request: IFindOneTaskCategoryDto,
@@ -112,6 +192,8 @@ export interface TaskCategoryServiceController {
   ): Promise<ITaskCategoryResponse> | Observable<ITaskCategoryResponse>;
 }
 
+export const TASK_CATEGORY_SERVICE_NAME = 'TaskCategoryService';
+export const TASK_SERVICE_NAME = 'TaskService';
 export function TaskCategoryServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
@@ -127,7 +209,7 @@ export function TaskCategoryServiceControllerMethods() {
         constructor.prototype,
         method,
       );
-      GrpcMethod('TaskCategoryService', method)(
+      GrpcMethod(TASK_CATEGORY_SERVICE_NAME, method)(
         constructor.prototype[method],
         method,
         descriptor,
@@ -135,5 +217,25 @@ export function TaskCategoryServiceControllerMethods() {
     }
   };
 }
-
-export const TASK_CATEGORY_SERVICE_NAME = 'TaskCategoryService';
+export function TaskServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = [
+      'findOneTask',
+      'findAllTasks',
+      'createTask',
+      'updateTask',
+      'deleteTask',
+    ];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod(TASK_SERVICE_NAME, method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
+    }
+  };
+}

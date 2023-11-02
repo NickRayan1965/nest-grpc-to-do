@@ -4,6 +4,7 @@ import EnvConfiguration from '../src/config/config';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './modules/user/user.module';
 import { TaskCategoryModule } from './modules/task-category/task-category.module';
+import { TaskModule } from './modules/task/task.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,6 +13,7 @@ import { TaskCategoryModule } from './modules/task-category/task-category.module
     }),
     DatabaseModule,
     UserModule,
+    TaskModule,
     TaskCategoryModule,
   ],
   controllers: [],
