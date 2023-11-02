@@ -16,18 +16,37 @@ import { GetUser } from 'apps/apigateway/src/auth/decorators/get-user.decorator'
 import { Auth } from 'apps/apigateway/src/auth/decorators/auth.decorator';
 import { UpdateTaskDto } from '../dtos/update/update-task.dto';
 import { FindTasksQueryDto } from '../dtos/query/find-tasks-query.dto';
+import {
+  ApiBadRequestResponseImplementation,
+  ApiCreatedResponseImplementation,
+  ApiNotFoundImplementation,
+  ApiOkResponseImplementation,
+  ApiUnauthorizedResponseImplementation,
+} from 'apps/apigateway/src/common/decorators/swagger-controller.decorator';
+import {
+  TaskListResponseDto,
+  TaskResponseDto,
+} from '../dtos/response/task-response.dto';
 
 @Controller('task')
 @ApiBearerAuth()
+@ApiBadRequestResponseImplementation()
+@ApiUnauthorizedResponseImplementation()
+@ApiNotFoundImplementation()
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @ApiCreatedResponseImplementation(TaskResponseDto)
   @Auth()
   @Post()
   create(@GetUser('id') userId: string, @Body() createTaskDto: CreateTaskDto) {
     return this.taskService.create(userId, createTaskDto);
   }
 
+  @ApiOkResponseImplementation({
+    type: TaskListResponseDto,
+    method: 'get',
+  })
   @Auth()
   @Get()
   findAllTasks(
@@ -37,6 +56,10 @@ export class TaskController {
     return this.taskService.findAll(userId, queryParams);
   }
 
+  @ApiOkResponseImplementation({
+    type: TaskResponseDto,
+    method: 'get',
+  })
   @Auth()
   @Get(':id')
   findTaskById(
@@ -46,6 +69,10 @@ export class TaskController {
     return this.taskService.findOneById(userId, taskId);
   }
 
+  @ApiOkResponseImplementation({
+    type: TaskResponseDto,
+    method: 'update',
+  })
   @Auth()
   @Patch(':id')
   update(
@@ -56,6 +83,10 @@ export class TaskController {
     return this.taskService.update(userId, taskId, updateTaskDto);
   }
 
+  @ApiOkResponseImplementation({
+    type: TaskResponseDto,
+    method: 'delete',
+  })
   @Auth()
   @Delete(':id')
   delete(
