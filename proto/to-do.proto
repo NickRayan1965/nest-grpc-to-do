@@ -9,6 +9,68 @@ service TaskCategoryService {
   rpc DeleteTaskCategory(IFindOneTaskCategoryDto) returns (ITaskCategoryResponse);
   rpc RestoreTaskCategory(IFindOneTaskCategoryDto) returns (ITaskCategoryResponse);
 }
+service TaskService {
+  rpc FindOneTask(IFindOneTaskDto) returns (ITaskResponse);
+  rpc FindAllTasks(IFindAllTasksDto) returns (ITaskListResponse);
+  rpc CreateTask(ICreateTaskDto) returns (ITaskResponse);
+  rpc UpdateTask(IUpdateTaskDto) returns (ITaskResponse);
+  rpc DeleteTask(IFindOneTaskDto) returns (ITaskResponse);
+}
+//<<Task>>
+message ITask{
+  string id = 1;
+  string userId = 2;
+  string name = 3;
+  string description = 4;
+  string expiration = 5;
+  string createdAt = 6;
+  string priority = 7;
+  string status = 8;
+  repeated ITaskCategory categories = 9;
+}
+message ICreateTaskDto {
+  string name = 1;
+  optional string description = 2;
+  string expiration = 3;
+  string priority = 4;
+  string userId = 5;
+  repeated string categoryIds = 6;
+}
+
+message IUpdateTaskDto {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string expiration = 4;
+  optional string priority = 5;
+  repeated string categoryIds = 6;
+  string userId = 7;
+}
+message IFindOneTaskDto {
+  string id = 1;
+  string userId = 2;
+}
+message IFindAllTasksDto {
+  string userId = 1;
+  optional string filterByContent = 2;
+  optional string expiration = 3;
+  optional string priority = 4;
+  optional string status = 5;
+  optional int32 page = 6;
+  optional int32 pageSize = 7;
+  repeated string categoryIds = 8;
+}
+message ITaskResponse {
+  ITask data = 1;
+  IMetaResponse meta = 2;
+}
+message ITaskListResponse {
+  repeated ITask data = 1;
+  IPaginationResponse pagination = 2;
+  IMetaResponse meta = 3;
+}
+
+// <<Task>>
 
 message ITaskCategory {
   string id = 1;
@@ -30,8 +92,8 @@ message ITaskCategoryResponse {
 
 message IPaginationResponse {
   int32 total_count = 1;
-  //int32 page_size = 4;
-  //int32 page = 3;
+  optional int32 pageSize = 2;
+  optional int32 page = 3;
 }
 // Meta Response
 //
