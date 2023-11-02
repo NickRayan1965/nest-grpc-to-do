@@ -10,7 +10,7 @@ export const protobufPackageTaskCategory = 'taskcategory';
 
 //<<Task>>
 export interface ITask {
-  id: string | Types.ObjectId;
+  _id: string | Types.ObjectId;
   userId: string;
   name: string;
   description: string;
@@ -29,7 +29,7 @@ export interface ICreateTaskDto {
   categoryIds: string[];
 }
 export interface IUpdateTaskDto {
-  id: string;
+  _id: string;
   userId: string;
   name?: string;
   description?: string;
@@ -38,7 +38,7 @@ export interface IUpdateTaskDto {
   categoryIds?: string[];
 }
 export interface IFindOneTaskDto {
-  id: string;
+  _id: string;
   userId: string;
 }
 export interface IFindAllTasksDto {
