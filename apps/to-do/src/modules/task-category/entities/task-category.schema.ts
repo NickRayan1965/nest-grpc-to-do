@@ -5,11 +5,7 @@ import { HydratedDocument, Types } from 'mongoose';
 export type TaskCategoryDocument = HydratedDocument<TaskCategory>;
 @Schema({ versionKey: false })
 export class TaskCategory implements ITaskCategory {
-  @Prop({
-    _id: true,
-    type: Types.ObjectId,
-  })
-  id: string | Types.ObjectId;
+  _id: string | Types.ObjectId;
 
   @Prop({
     required: true,
@@ -25,13 +21,6 @@ export class TaskCategory implements ITaskCategory {
     index: true,
   })
   userId: string;
-
-  @Prop({
-    required: true,
-    type: Boolean,
-    default: true,
-  })
-  isActive: boolean;
 }
 export const TaskCategorySchema = SchemaFactory.createForClass(TaskCategory);
 TaskCategorySchema.index({ name: 1, userId: 1 }, { unique: true });

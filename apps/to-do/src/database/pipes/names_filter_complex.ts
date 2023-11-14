@@ -9,7 +9,8 @@ export default function pipeLinesStageToFilterNamesComplexly<T>({
   expression,
   fieldsToConcat,
 }: IPipeLinesStageToFilterNamesComplexly<T>) {
-  expression = cleanFilterExpression(expression);
+  expression = cleanFilterExpression(expression ?? '');
+  if (!expression) return [] as PipelineStage[];
   const namesList = expression.split(' ');
 
   //["campoPrimerNombre", "campoSegundoNombre", "campoPrimerApellido"] => [{$toLower: "$campoPrimerNombre"}, " " ,{$toLower: "$campoSegundoNombre"}, " " ...]

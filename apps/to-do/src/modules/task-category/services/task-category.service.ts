@@ -18,12 +18,15 @@ import { UserService } from '../../user/services/user.service';
 import { handleExceptions } from 'apps/to-do/src/common/errors/handle-exceptions';
 import { buildResponse } from 'apps/to-do/src/common/utils/build-response.util';
 import { RpcNotFoundException } from 'apps/auth/src/common/errors/rcp-exception.exception';
+import { TaskService } from '../../task/services/task.service';
+import { toJson } from 'apps/to-do/src/common/utils/to-json.util';
 const entityName = TaskCategory.name;
 @Injectable()
 export class TaskCategoryService {
   constructor(
     @InjectModel(entityName)
     private readonly taskCategoryModel: Model<TaskCategoryDocument>,
+    private readonly taskService: TaskService,
     private readonly userService: UserService,
   ) {}
 
@@ -49,14 +52,15 @@ export class TaskCategoryService {
   async findAll(
     findAllOptionsDto: IFindAllTaskCategoriesDto,
   ): Promise<ITaskCategoryListResponse> {
-    const { name, isActive, userId } = findAllOptionsDto;
+    const { name, userId } = findAllOptionsDto;
     await firstValueFrom(this.userService.findOneById(userId));
     const query: FilterQuery<TaskCategory> = {
-      name: { $regex: name, $options: 'i' },
-      isActive,
+      name: name ? { $regex: name, $options: 'i' } : undefined,
       userId,
     };
-    const taskCategories = await this.taskCategoryModel.find(query);
+    const taskCategories = await this.taskCategoryModel
+      .find(toJson(query))
+      .exec();
     return buildResponse<ITaskCategoryListResponse>({
       data: taskCategories,
       status: HttpStatus.OK,
@@ -67,7 +71,7 @@ export class TaskCategoryService {
   }
   async findOneById({ id, userId }: IFindOneTaskCategoryDto) {
     const taskCategory = await this.taskCategoryModel.findOne({
-      id,
+      _id: id,
       userId,
     });
     if (!taskCategory) {
@@ -98,11 +102,9 @@ export class TaskCategoryService {
   }
   async deleteOneById({ id, userId }: IFindOneTaskCategoryDto) {
     await this.findOneById({ id, userId });
-    const taskCategoryDeleted = await this.taskCategoryModel.findOneAndUpdate(
-      { id },
-      { isActive: false },
-      { new: true },
-    );
+    const taskCategoryDeleted =
+      await this.taskCategoryModel.findByIdAndRemove(id);
+    await this.taskService.removeCategoryFromTasks(id);
     return buildResponse<ITaskCategoryResponse>({
       data: taskCategoryDeleted,
       status: HttpStatus.OK,

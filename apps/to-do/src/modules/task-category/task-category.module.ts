@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   TaskCategory,
@@ -7,6 +7,7 @@ import {
 import { UserModule } from '../user/user.module';
 import { TaskCategoryService } from './services/task-category.service';
 import { TaskCategoryController } from './controller/task-category.controller';
+import { TaskModule } from '../task/task.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { TaskCategoryController } from './controller/task-category.controller';
       { name: TaskCategory.name, schema: TaskCategorySchema },
     ]),
     UserModule,
+    forwardRef(() => TaskModule),
   ],
   providers: [TaskCategoryService],
   exports: [TaskCategoryService],

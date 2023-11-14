@@ -61,7 +61,7 @@ export class Task implements ITask {
     ref: TaskCategory.name,
     type: [Types.ObjectId],
   })
-  categories: TaskCategory[];
+  categories: TaskCategory[] | Types.ObjectId[];
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

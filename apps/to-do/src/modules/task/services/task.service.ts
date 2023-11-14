@@ -1,7 +1,7 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task, TaskDocument } from '../entities/task.schema';
-import { Model, PipelineStage } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import {
   ICreateTaskDto,
   IFindAllTasksDto,
@@ -19,15 +19,16 @@ import { buildResponse } from 'apps/to-do/src/common/utils/build-response.util';
 import config from 'apps/to-do/src/config/config';
 import { ConfigType } from '@nestjs/config';
 import pipelineStageToConnectToNestedObject from 'apps/to-do/src/database/pipes/func_connect_mongo_object_to_nested_object_with_fk';
-import { TaskCategory } from '../../task-category/entities/task-category.schema';
 import pipeLinesStageToFilterNamesComplexly from 'apps/to-do/src/database/pipes/names_filter_complex';
-import { FindTasksResultAgregation } from '../interfaces/find-tasks-result.interface';
+import { toJson } from 'apps/to-do/src/common/utils/to-json.util';
+import { getPaginationPipelines } from 'apps/to-do/src/common/utils/get-pagination-pipelines.util';
 const entityName = Task.name;
 @Injectable()
 export class TaskService {
   constructor(
     @InjectModel(entityName) private readonly taskModel: Model<TaskDocument>,
     private readonly userService: UserService,
+    @Inject(forwardRef(() => TaskCategoryService))
     private readonly taskCategoryService: TaskCategoryService,
     @Inject(config.KEY)
     private readonly configService: ConfigType<typeof config>,
@@ -63,69 +64,67 @@ export class TaskService {
       userId,
       page = query.page,
       pageSize = query.page_size,
-      categoryIds,
+      // categoryIds,
       expiration,
       filterByContent,
       priority,
       status,
+      categoryIds,
     } = findAllTaskDto;
-    const matchPipeline: PipelineStage = {
+    const matchPipeline = toJson({
       $match: {
         userId,
         expiration,
         priority,
         status,
       },
-    };
-    const paginationPipeline: PipelineStage = {
-      $limit: pageSize,
-      $skip: (page - query.min_page) * pageSize,
-    };
-    const {
-      pipeLineStagesOfRelation: pipeLineStagesOfRelationOfCategories,
-      matchPipeline: matchPipelineOfCategories,
-    } = pipelineStageToConnectToNestedObject({
-      from: TaskCategory.name,
-      as: 'categories',
-      localField: 'categories',
-      foreignField: 'id',
-      matchIds: categoryIds,
     });
     const filterByContentPipelines: PipelineStage[] =
       pipeLinesStageToFilterNamesComplexly<Task>({
         expression: filterByContent,
         fieldsToConcat: ['name', 'description'],
       });
-    const pipelineStages: PipelineStage[] = [
-      matchPipeline,
-      ...pipeLineStagesOfRelationOfCategories,
-      matchPipelineOfCategories,
-      ...filterByContentPipelines,
-      paginationPipeline,
-    ];
+    const {
+      pipeLineStagesOfRelation: pipeLineStagesOfRelationOfCategories,
+      matchPipeline: matchPipelineOfCategories,
+    } = pipelineStageToConnectToNestedObject({
+      from: 'taskcategories',
+      as: 'categories',
+      localField: 'categories',
+      foreignField: '_id',
+      many: true,
+      matchIds: categoryIds,
+    });
 
-    const [result]: FindTasksResultAgregation[] =
-      await this.taskModel.aggregate([
+    const result = await this.taskModel
+      .aggregate([
+        matchPipeline,
+        ...pipeLineStagesOfRelationOfCategories,
+        ...filterByContentPipelines,
+        ...(matchPipelineOfCategories ? [matchPipelineOfCategories] : []),
         {
           $facet: {
-            data: pipelineStages as PipelineStage.FacetPipelineStage[],
+            data: [
+              ...getPaginationPipelines({
+                page,
+                pageSize,
+                minPage: query.min_page,
+              }),
+            ],
             totalCount: [
-              matchPipeline,
-              ...(pipeLineStagesOfRelationOfCategories as PipelineStage.FacetPipelineStage[]),
-              matchPipelineOfCategories,
               {
                 $count: 'total_count',
               },
             ],
           },
         },
-      ]);
-    console.log({ result: JSON.stringify(result) });
+      ])
+      .exec();
     return buildResponse<ITaskListResponse>({
-      data: result.data,
+      data: result[0].data,
       status: HttpStatus.OK,
       pagination: {
-        total_count: result.totalCount.total_count ?? 0,
+        total_count: result[0].totalCount[0]?.total_count ?? 0,
       },
     });
   }
@@ -155,6 +154,12 @@ export class TaskService {
       status: HttpStatus.OK,
     });
   }
+  async removeCategoryFromTasks(categoryId: string) {
+    await this.taskModel.updateMany(
+      { categories: categoryId },
+      { $pull: { categories: new Types.ObjectId(categoryId) } },
+    );
+  }
   async getAndValidateTaskDto(
     dto: Partial<ICreateTaskDto | IUpdateTaskDto> = {},
   ) {
@@ -168,9 +173,11 @@ export class TaskService {
       userId ? firstValueFrom(this.userService.findOneById(userId)) : undefined,
       categoryIds.length ? categoryPromises : undefined,
     ]);
+    const a = categories?.map(({ data: category }) => category._id.toString());
+    console.log({ a });
     return new this.taskModel({
       userId,
-      categories,
+      categories: a,
       ...rest,
     });
   }
