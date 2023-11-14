@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -27,6 +26,7 @@ import {
   TaskListResponseDto,
   TaskResponseDto,
 } from '../dtos/response/task-response.dto';
+import { ParseMongoIdPipe } from 'apps/apigateway/src/common/pipe/parse-mongo-id.pipe';
 
 @Controller('task')
 @ApiTags('Task')
@@ -67,7 +67,7 @@ export class TaskController {
   @Auth()
   @Get(':id')
   findTaskById(
-    @Param('id', ParseUUIDPipe) taskId: string,
+    @Param('id', ParseMongoIdPipe) taskId: string,
     @GetUser('id') userId: string,
   ) {
     return this.taskService.findOneById(userId, taskId);
@@ -82,7 +82,7 @@ export class TaskController {
   @Patch(':id')
   update(
     @GetUser('id') userId: string,
-    @Param('id', ParseUUIDPipe) taskId: string,
+    @Param('id', ParseMongoIdPipe) taskId: string,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
     return this.taskService.update(userId, taskId, updateTaskDto);
@@ -97,7 +97,7 @@ export class TaskController {
   @Delete(':id')
   delete(
     @GetUser('id') userId: string,
-    @Param('id', ParseUUIDPipe) taskId: string,
+    @Param('id', ParseMongoIdPipe) taskId: string,
   ) {
     return this.taskService.delete(userId, taskId);
   }

@@ -6,7 +6,7 @@ export const config = new DocumentBuilder()
     type: 'http',
     scheme: 'bearer',
     bearerFormat: 'JWT',
-    in: 'header',
+    in: 'headers',
   })
   .setTitle(title_app)
   .setVersion('1.0')

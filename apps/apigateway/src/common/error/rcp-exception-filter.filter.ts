@@ -1,13 +1,24 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Response } from 'express';
+import isValidJson from '../utils/is-valid-json.util';
 
 @Catch(RpcException)
 export class RpcExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
-    const error: any = JSON.parse((exception.getError() as any).details);
+    const expectedErrorString = exception.getError()?.details;
+    const internalServerError = new InternalServerErrorException();
+    const finalErrorString = isValidJson(expectedErrorString)
+      ? expectedErrorString
+      : JSON.stringify(internalServerError.getResponse());
+    const errorJson: any = JSON.parse(finalErrorString);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    response.status(error.statusCode).json(error);
+    response.status(errorJson.statusCode).json(errorJson);
   }
 }

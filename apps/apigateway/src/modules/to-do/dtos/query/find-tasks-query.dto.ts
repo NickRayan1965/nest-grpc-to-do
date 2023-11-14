@@ -1,5 +1,6 @@
 import { IFindAllTasksDto } from '@app/common';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { TransformToStringArray } from 'apps/apigateway/src/common/helpers/transform-to-string-array.helper';
 import { TaskPriorityEnum } from 'apps/to-do/src/modules/task/entities/enum/task-priority.enum';
 import { TaskStatusEnum } from 'apps/to-do/src/modules/task/entities/enum/task-status.enum';
 import {
@@ -7,9 +8,9 @@ import {
   IsDateString,
   IsEnum,
   IsInt,
+  IsMongoId,
   IsOptional,
   IsString,
-  IsUUID,
   Length,
   Min,
 } from 'class-validator';
@@ -74,7 +75,8 @@ export class FindTasksQueryDto implements Omit<IFindAllTasksDto, 'userId'> {
     type: [String],
     format: 'uuid',
   })
-  @IsUUID('4', { each: true })
+  @TransformToStringArray()
+  @IsMongoId({ each: true })
   @IsArray()
   @IsOptional()
   categoryIds?: string[];

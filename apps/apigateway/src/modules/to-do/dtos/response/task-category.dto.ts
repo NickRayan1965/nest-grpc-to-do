@@ -6,7 +6,7 @@ export class TaskCategoryDto implements ITaskCategory {
     title: 'Task Category Id',
     format: 'uuid',
   })
-  id: string;
+  _id: string;
 
   @ApiProperty({
     title: 'Task Category Name',

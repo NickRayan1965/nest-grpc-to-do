@@ -18,15 +18,15 @@ export class TaskService implements OnModuleInit {
     return this.taskService.createTask({ userId, ...dto });
   }
   update(userId: string, taskId: string, dto: UpdateTaskDto) {
-    return this.taskService.updateTask({ id: taskId, userId, ...dto });
+    return this.taskService.updateTask({ _id: taskId, userId, ...dto });
   }
   delete(userId: string, taskId: string) {
-    return this.taskService.deleteTask({ id: taskId, userId });
+    return this.taskService.deleteTask({ _id: taskId, userId });
   }
   findOneById(userId: string, taskId: string) {
-    return this.taskService.findOneTask({ id: taskId, userId });
+    return this.taskService.findOneTask({ _id: taskId, userId });
   }
-  findAll(userId: string, findTasksQueryDto: FindTasksQueryDto) {
+  async findAll(userId: string, findTasksQueryDto: FindTasksQueryDto) {
     return this.taskService.findAllTasks({
       userId,
       ...findTasksQueryDto,

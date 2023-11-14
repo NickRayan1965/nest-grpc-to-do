@@ -5,9 +5,9 @@ import {
   IsArray,
   IsDateString,
   IsEnum,
+  IsMongoId,
   IsOptional,
   IsString,
-  IsUUID,
   Length,
 } from 'class-validator';
 
@@ -48,7 +48,7 @@ export class CreateTaskDto implements Omit<ICreateTaskDto, 'userId'> {
     type: [String],
     format: 'uuid',
   })
-  @IsUUID('4', { each: true })
+  @IsMongoId({ each: true })
   @IsArray()
   @IsOptional()
   categoryIds: string[];

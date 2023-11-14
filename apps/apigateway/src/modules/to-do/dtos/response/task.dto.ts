@@ -9,7 +9,7 @@ export class TaskDto implements ITask {
     title: 'Task Id',
     format: 'uuid',
   })
-  id: string;
+  _id: string;
 
   @ApiProperty({
     title: 'User Id',

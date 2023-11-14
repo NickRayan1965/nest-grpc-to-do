@@ -8,6 +8,8 @@ import { ConfigType } from '@nestjs/config';
 import { AuthModule } from '../../auth/auth.module';
 import { TaskController } from './controllers/task.controller';
 import { TaskService } from './services/task.service';
+import { TaskCategoryService } from './services/task-category.service';
+import { TaskCategoryController } from './controllers/task-category.controller';
 @Module({
   imports: [
     ClientsModule.registerAsync({
@@ -31,7 +33,7 @@ import { TaskService } from './services/task.service';
     }),
     AuthModule,
   ],
-  controllers: [TaskController],
-  providers: [TaskService],
+  controllers: [TaskController, TaskCategoryController],
+  providers: [TaskService, TaskCategoryService],
 })
 export class ToDoModule {}
