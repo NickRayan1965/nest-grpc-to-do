@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { GrpcMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import BooleanString from '../interfaces/boolean-string.interface';
 import { Types } from 'mongoose';
 import { TaskPriorityEnum } from 'apps/to-do/src/modules/task/entities/enum/task-priority.enum';
 import { TaskStatusEnum } from 'apps/to-do/src/modules/task/entities/enum/task-status.enum';
@@ -18,7 +17,7 @@ export interface ITask {
   createdAt: string;
   priority: TaskPriorityEnum;
   status: TaskStatusEnum;
-  categories: ITaskCategory[];
+  categories: ITaskCategory[] | Types.ObjectId[];
 }
 export interface ICreateTaskDto {
   userId: string;
@@ -63,16 +62,14 @@ export interface ITaskListResponse {
 //<<Task>>
 
 export interface ITaskCategory {
-  id: string | Types.ObjectId;
+  _id: string | Types.ObjectId;
   name: string;
   userId: string;
-  isActive: boolean;
 }
 
 export interface IFindAllTaskCategoriesDto {
   userId: string;
   name?: string;
-  isActive?: BooleanString;
 }
 export interface IPaginationResponse {
   total_count: number;
@@ -110,7 +107,7 @@ export interface ICreateTaskCategoryDto {
 export interface IUpdateTaskCategoryDto {
   id: string;
   userId: string;
-  name: string;
+  name?: string;
 }
 export interface IRestoreTaskCategoryDto {
   id: string;

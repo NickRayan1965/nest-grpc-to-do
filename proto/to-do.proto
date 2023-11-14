@@ -73,14 +73,13 @@ message ITaskListResponse {
 // <<Task>>
 
 message ITaskCategory {
-  string id = 1;
+  string _id = 1;
   string name = 2;
-  bool isActive = 4;
+  string userId = 3;
 }
 message IFindAllTaskCategoriesDto {
   string userId = 1;
   optional string name = 2;
-  optional string isActive = 3;
 }
 
 
@@ -98,7 +97,7 @@ message IPaginationResponse {
 // Meta Response
 //
 message IMetaResponse {
-  string statusCode = 1;
+  int32 statusCode = 1;
   string message = 2;
   //any errors
   optional google.protobuf.Any errors = 3;
